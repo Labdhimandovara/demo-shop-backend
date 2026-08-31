@@ -18,8 +18,14 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000')
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow server-to-server (no Origin header) and whitelisted origins
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+    // Allow server-to-server (no Origin header) and whitelisted origins or any Vercel domain
+    if (
+      !origin ||
+      ALLOWED_ORIGINS.includes(origin) ||
+      ALLOWED_ORIGINS.includes('*') ||
+      origin.endsWith('.vercel.app') ||
+      origin.includes('localhost')
+    ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
